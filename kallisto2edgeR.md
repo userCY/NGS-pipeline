@@ -60,13 +60,9 @@ head(txi.kallisto.tsv$counts)
 sampleTable file format:
 --------------------------
 SampleTable data.frame is used in kallisto, sleuth and tximport.
-
 The basic format of this df contains only 1 column:
-
 rownames: sample name
-
 colnames: 'condition'
-
 colData: condition group relating to the sample (eg. control, KO)
 
 FTO example:
