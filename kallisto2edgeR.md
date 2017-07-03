@@ -7,8 +7,9 @@ kallisto2edgeR with tximport
 library(tximport)
 library(ensembldb)
 library(EnsDb.Hsapiens.v86) 
-# choose the appropriate or latest ensembl annotation
 ```
+choose the appropriate or latest ensembl annotation
+
 ### 2. create tx to gene symbol annotations from ensembl database
 
 ```R
@@ -59,12 +60,17 @@ head(txi.kallisto.tsv$counts)
 sampleTable file format:
 --------------------------
 SampleTable data.frame is used in kallisto, sleuth and tximport.
+
 The basic format of this df contains only 1 column:
+
 rownames: sample name
+
 colnames: 'condition'
+
 colData: condition group relating to the sample (eg. control, KO)
 
 FTO example:
+
 |  | condition |
 | ------------- | ------------- |
 | FTO+\_1 | FTO+ |
