@@ -1,4 +1,4 @@
-kallisto2edgeR with tximport
+kallisto output data processed by tximport for downstream analysis
 ====================
 
 ### 1. import required libraries
@@ -8,7 +8,10 @@ library(tximport)
 library(ensembldb)
 library(EnsDb.Hsapiens.v86) 
 ```
-choose the appropriate or latest ensembl annotation
+>The tximport package has a single function for importing transcript-level estimates. The type argument is used to specify what software was used for estimation (“kallisto”, “salmon”, “sailfish”, and “rsem” are implemented). A simple list with matrices, “abundance”, “counts”, and “length”, is returned, where the transcript level information is summarized to the gene-level. The “length” matrix can be used to generate an offset matrix for downstream gene-level differential analysis of count matrices, as shown below.
+
+**note:**
+> tximport could alternatively generate counts from abundances, using the argument countsFromAbundance, scaled to library size, "scaledTPM", or additionally scaled using the average transcript length, averaged over samples and to library size, "lengthScaledTPM". Using either of these approaches, **the counts are not correlated with length**, and so the length matrix should not be provided as an offset for downstream analysis packages. 
 
 ### 2. create tx to gene symbol annotations from ensembl database
 
