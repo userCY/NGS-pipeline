@@ -56,9 +56,18 @@ The modified file need to be placed back to the kallisto output directory manual
 ```R
 files <- file.path('D:','RWD', "FTO", row.names(sampleTable), "abundance.tsv")
 names(files) <- row.names(sampleTable)
+```
+generate raw counts with:
+```R
 txi.kallisto.tsv <- tximport(files, type = "kallisto", tx2gene = tx2gene)
 head(txi.kallisto.tsv$counts)
 ```
+generate length-independent scaled counts with:
+```R
+txi <- tximport(files, type = "salmon", tx2gene = tx2gene, countsFromAbundance = "lengthScaledTPM")
+head(txi.kallisto.tsv$counts)
+```
+scaled counts are suitable for gene expression related plots, such as heatmap or expression bar plot
 
 sampleTable file format:
 --------------------------
