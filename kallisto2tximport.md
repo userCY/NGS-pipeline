@@ -19,7 +19,7 @@ library(EnsDb.Hsapiens.v86)
 # extract transcripts annotations
 ensdb.hs <- EnsDb.Hsapiens.v86
 tx.hs <- transcripts(ensdb.hs,return.type = "DataFrame")
-tx.hs <- k[,c("tx_id", "gene_id")]
+tx.hs <- tx.hs[,c("tx_id", "gene_id")]
 
 # extract genes annotations
 gene.hs <- genes(ensdb.hs, return.type = 'DataFrame')
