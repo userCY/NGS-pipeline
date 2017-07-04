@@ -29,7 +29,7 @@ gene.hs <- gene.hs[,c('gene_id', 'symbol')]
 tx2gene.hs <- merge(tx.hs, gene.hs, by = 'gene_id')
 
 # only keep tx ID, gene ID
-tx2gene <- tx2genes.hs[, 2:3]  # tx ID, then gene ID
+tx2gene <- tx2gene.hs[, 2:3]  # tx ID, then gene ID
 
 # clean mem
 rm(tx.hs, gene.hs, tx2gene.hs)
