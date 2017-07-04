@@ -64,7 +64,7 @@ head(txi.kallisto.tsv$counts)
 ```
 generate length-independent scaled counts with:
 ```R
-txi <- tximport(files, type = "salmon", tx2gene = tx2gene, countsFromAbundance = "lengthScaledTPM")
+txi <- tximport(files, type = "kallisto", tx2gene = tx2gene, countsFromAbundance = "lengthScaledTPM")
 head(txi.kallisto.tsv$counts)
 ```
 scaled counts are suitable for gene expression related plots, such as heatmap or expression bar plot
