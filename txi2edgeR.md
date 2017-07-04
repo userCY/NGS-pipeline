@@ -57,3 +57,20 @@ sqrt(y$common.disp)
 plotBCV(y)
 ```
 
+### 5. Calculate differential expression
+```R
+# To perform quasi-likelihood F-tests:
+fit <- glmQLFit(y,design)
+qlf <- glmQLFTest(fit,coef=2)
+topTags(qlf)
+
+# Conduct likelihood ratio tests:
+lrt <- glmLRT(fit)
+topTags(lrt)
+
+# Note that glmLRT has conducted a test for the last coefficient in the linear model:
+colnames(design)
+
+plotMD(lrt)
+abline(h=c(-1, 1), col="blue")
+```
