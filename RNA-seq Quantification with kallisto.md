@@ -2,7 +2,7 @@ RNA-seq Quantification with kallisto
 ========================================
 
 ### 1. Building Kallisto human transcriptome index
-```linux
+```R
 kallisto index -i GRCh38_trans.idx <ref transcriptome>
 ```
 ### 2. Quantification with Kallisto
