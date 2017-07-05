@@ -44,6 +44,14 @@ rm(tx.hs, gene.hs, tx2gene.hs)
 
 The kallisto quantification tx_id doesn't match the tx2gene map tx_id, which will casue an error. 
 The problem is to be addresed with:
+
+create a sample table first (format: rownames:sample; colnames:condition; colData: group) and corresponding file path:
+```R
+sampleTable <- data.frame('condition' = c('FTO+', 'FTO+', 'WT', 'WT'), stringsAsFactors = FALSE)
+row.names(sampleTable) <- c('FTO+_1', 'FTO+_2', 'WT_1', 'WT_2')
+file <- file.path('D:', 'RWD', row.names(sampleTable), 'abundance.tsv')
+```
+removing version number:
 ```R
 abund_file <- read.table(file = files[4], sep = '\t', header = TRUE, stringsAsFactors = FALSE)
 abund_file[,1] <- substr(abund_file[,1], 1, 15)
