@@ -53,7 +53,7 @@ file <- file.path('D:', 'RWD', row.names(sampleTable), 'abundance.tsv')
 ```
 removing version number:
 ```R
-abund_file <- read.table(file = files[4], sep = '\t', header = TRUE, stringsAsFactors = FALSE)
+abund_file <- read.table(file = file[4], sep = '\t', header = TRUE, stringsAsFactors = FALSE)
 abund_file[,1] <- substr(abund_file[,1], 1, 15)
 write.table(abund_file, file='abundance.tsv', quote=FALSE, sep='\t', row.names = FALSE)
 ```
