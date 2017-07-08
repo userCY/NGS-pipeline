@@ -63,7 +63,7 @@ The modified file need to be placed back to the kallisto output directory manual
 ### 4. creating txi file from kallisto output directory
 ```R
 files <- file.path('D:','RWD', "FTO", row.names(sampleTable), "abundance.tsv")
-names(files) <- row.names(sampleTable)
+names(file) <- row.names(sampleTable)
 ```
 generate raw counts with:
 ```R
