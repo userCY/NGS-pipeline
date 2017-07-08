@@ -67,7 +67,7 @@ names(files) <- row.names(sampleTable)
 ```
 generate raw counts with:
 ```R
-txi.kallisto.tsv <- tximport(files, type = "kallisto", tx2gene = tx2gene)
+txi.kallisto.tsv <- tximport(file, type = "kallisto", tx2gene = tx2gene)
 head(txi.kallisto.tsv$counts)
 ```
 generate length-independent scaled counts with:
