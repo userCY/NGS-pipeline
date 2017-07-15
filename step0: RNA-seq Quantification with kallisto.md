@@ -38,7 +38,7 @@ import fnmatch
 
 # extract forward and reverse seq file names
 file = os.listdir(os.getcwd())
-foward = fnmatch.filter(file, '*_1.fq.gz')
+forward = fnmatch.filter(file, '*_1.fq.gz')
 reverse = fnmatch.filter(file, '*_2.fq.gz')
 
 # determine file number
