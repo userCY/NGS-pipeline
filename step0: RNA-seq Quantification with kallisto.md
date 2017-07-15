@@ -39,7 +39,9 @@ import fnmatch
 # extract forward and reverse seq file names
 file = os.listdir(os.getcwd())
 forward = fnmatch.filter(file, '*_1.fq.gz')
+forward.sort()
 reverse = fnmatch.filter(file, '*_2.fq.gz')
+reverse.sort()
 
 # determine file number
 n = len(forward)
