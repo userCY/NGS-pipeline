@@ -51,7 +51,7 @@ sampleTable <- data.frame('condition' = c('FTO+', 'FTO+', 'WT', 'WT'), stringsAs
 row.names(sampleTable) <- c('FTO+_1', 'FTO+_2', 'WT_1', 'WT_2')
 file <- file.path('D:', 'RWD', row.names(sampleTable), 'abundance.tsv')
 ```
-removing version number:
+#### 3.1 removing version number (R version):
 ```R
 abund_file <- read.table(file = file[4], sep = '\t', header = TRUE, stringsAsFactors = FALSE)
 abund_file[,1] <- substr(abund_file[,1], 1, 15)
@@ -59,6 +59,30 @@ write.table(abund_file, file='abundance.tsv', quote=FALSE, sep='\t', row.names =
 ```
 **_Note that these codes create an abundance.tsv file under the R working directory.
 The modified file need to be placed back to the kallisto output directory manually_**
+
+#### 3.2 removing version number (python version, recomended):
+```python
+import os
+import re
+
+files = os.listdir(os.getcwd())
+p = re.compile(r'\w{2}\d{1,2}')
+for file in files:
+    m=p.search(file)
+    if m!=None:
+        folder.append(m.group())
+for i in range(42):
+    folder_path = folder[i]
+    path1 = './/'+folder_path+'//'+'abundance.tsv'
+    path2 = './/'+folder_path+'//'+'abundance_mod.tsv'
+    with open(path1, 'r') as f:
+        with open(path2, 'w') as n:
+            for line in f.readlines():
+            line = re.sub(r'\.\d{1}', '', line)
+            n.write(line)
+    print(folder_path+' '+'completed')
+    print('\t')
+```
 
 ### 4. creating txi file from kallisto output directory
 ```R
