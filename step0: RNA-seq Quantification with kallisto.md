@@ -27,6 +27,36 @@ Options:
 -s <br> --sd=DOUBLE | Estimated standard deviation of fragment length (default: -l, -s values are estimated <br> from paired end data, but are required when using --single)
 -t <br> --threads=INT | Number of threads to use (default: 1)
 
+### 3. For batch processing
+***Example:***
+```python
+# wording directory: fastq file directory
+
+import os
+import re
+import fnmatch
+
+# extract forward and reverse seq file names
+foward = fnmatch.filter(file, '*_1.fq.gz')
+reverse = fnmatch.filter(file, '*_2.fq.gz')
+
+# determine file number
+n = len(forward)
+
+# set file path
+kallisto_idx = 'index path'
+output_dir_base = 'out dir base name'
+
+
+# batch processing
+for i in range(n)：
+	p = re.compile(r'\w\w\d{1,2}')
+	m = p.search(forward[i])
+	outdir = m.group().lower()
+	kallisto_cmd = 'kallisto quant -i'+' '+'' -o'+' '+kallisto_idx + output_dir_base + outdir+' '+'-b 10 -t 10'
+	os.system(kallisto_cmd+' '+forward[i]+' '+reverse[i])
+```
+
 kallisto output file format:
 ----------------
 kallisto quant produces three output files by default:
