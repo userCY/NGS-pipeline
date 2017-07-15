@@ -67,10 +67,13 @@ import re
 
 files = os.listdir(os.getcwd())
 p = re.compile(r'\w{2}\d{1,2}')
+folder = []
+
 for file in files:
     m=p.search(file)
     if m!=None:
         folder.append(m.group())
+        
 for i in range(42):
     folder_path = folder[i]
     path1 = './/'+folder_path+'//'+'abundance.tsv'
@@ -78,7 +81,7 @@ for i in range(42):
     with open(path1, 'r') as f:
         with open(path2, 'w') as n:
             for line in f.readlines():
-            line = re.sub(r'\.\d{1}', '', line)
+            line = re.sub(r'(\.\d{1})?', '', line)
             n.write(line)
     print(folder_path+' '+'completed')
     print('\t')
