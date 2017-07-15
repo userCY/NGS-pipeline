@@ -54,7 +54,7 @@ for i in range(n)：
 	p = re.compile(r'\w\w\d{1,2}')
 	m = p.search(forward[i])
 	outdir = m.group().lower()
-	kallisto_cmd = 'kallisto quant -i' + ' ' + '-o' + ' ' + kallisto_idx + ' ' + output_dir_base + 'outdir' +' '+'-b 10 -t 10'
+	kallisto_cmd = 'kallisto quant -i' + ' ' + '-o' + ' ' + kallisto_idx + ' ' + output_dir_base + outdir +' '+'-b 10 -t 10'
 	os.system(kallisto_cmd+' '+forward[i]+' '+reverse[i])
 ```
 
