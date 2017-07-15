@@ -81,7 +81,7 @@ for i in range(42):
     with open(path1, 'r') as f:
         with open(path2, 'w') as n:
             for line in f.readlines():
-                line = re.sub(r'(\.\d{1})?', '', line)
+                line = re.sub(r'\.\d{1}\t', '\t', line)
                 n.write(line)
     print(folder_path+' '+'completed')
     print('\t')
