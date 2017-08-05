@@ -11,24 +11,24 @@ library(edgeR)
 cts <- txi.kallisto.tsv$counts
 normMat <- txi.kallisto.tsv$length
 normMat <- normMat/exp(rowMeans(log(normMat)))
+# normalize for gene length and seq depth
 o <- log(calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
 
 group <- c('FTO+','FTO+','WT','WT')
 y <- DGEList(counts=cts,group=group)
 
 y$offset <- t(t(log(normMat)) + o)
-
-
 ```
 y is ready for estimate dispersion functions in edgeR
 
 **note: group value identifies the group memberhip of each sample and should be manually created. group is in y$samples$group.**
+**note: the offsets is prioritized over the normalization factors/library sizes when it is available; the offsets will be used and the normalization factors/library sizes will be ignored in most edgeR functions
 
 ### 2. Filtering
 
 low expressed genes are filtered out prior to further analysis:
 ```R
-keep <- rowSums(cpm(y)>1) >= 2
+keep <- rowSums(cpm(y)>1) >= 3
 keep
 y <- y[keep, , keep.lib.sizes=FALSE]
 rm(keep)
@@ -39,10 +39,12 @@ y$samples$lib.size <- colSums(y$counts)
 
 ### 3. Normalization
 ```R
+# normalize for RNA composition
+# the original library size * the scaling factor = effective library size
 y <- calcNormFactors(y)
 y$samples
 ```
-choice of normalized data: https://github.com/hbc/knowledgebase/wiki/Count-normalization-methods
+**choice of normalized data: https://github.com/hbc/knowledgebase/wiki/Count-normalization-methods**
 
 ### 4. Examine data
 plotMDS produces a plot in which distances between samples correspond to leading biological coefficient of variation (BCV) between those samples. Ctrl and Exp samples should be separeted by dimensions:
