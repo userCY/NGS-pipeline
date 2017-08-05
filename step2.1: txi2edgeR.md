@@ -39,7 +39,7 @@ y$samples$lib.size <- colSums(y$counts)
 y <- calcNormFactors(y)
 y$samples
 ```
-**ref: choice of normalized data: https://github.com/hbc/knowledgebase/wiki/Count-normalization-methods  
+**ref: choice of normalized data: 
 
 ### 4. Examine data
 plotMDS produces a plot in which distances between samples correspond to leading biological coefficient of variation (BCV) between those samples. Ctrl and Exp samples should be separeted by dimensions:
