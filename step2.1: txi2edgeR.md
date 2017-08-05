@@ -39,6 +39,7 @@ y$samples$lib.size <- colSums(y$counts)
 y <- calcNormFactors(y)
 y$samples
 ```
+
 **ref: choice of normalized data: 
 
 ### 4. Examine data
