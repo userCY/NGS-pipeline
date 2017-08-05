@@ -17,6 +17,8 @@ group <- c('FTO+','FTO+','WT','WT')
 y <- DGEList(counts=cts,group=group)
 
 y$offset <- t(t(log(normMat)) + o)
+
+
 ```
 y is ready for estimate dispersion functions in edgeR
 
