@@ -73,6 +73,7 @@ for i,f in enumerate(forward):
 	print
 	cmd='java -jar /home/ycli/data1/Trimmomatic-0.36/trimmomatic-0.36.jar PE -phred33 -threads 10\
 	{0} {1} {2} {3} {4} {5} \
-	HEADCROP:{6} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 ILLUMINACLIP:{7}:2:30:10'.format(fq1,fq2,out1,out12,out2,out22,headcrop,adapter)
+	HEADCROP:{6} LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 \
+	ILLUMINACLIP:{7}:2:30:10'.format(fq1,fq2,out1,out12,out2,out22,headcrop,adapter)
 	os.system(cmd)
 ```
