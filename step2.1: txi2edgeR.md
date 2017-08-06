@@ -14,7 +14,7 @@ normMat <- normMat/exp(rowMeans(log(normMat)))
 # normalize for gene length and seq depth
 o <- log(calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
 
-group <- c('FTO+','FTO+','WT','WT')
+group <- c(sampleTable$condition)
 y <- DGEList(counts=cts,group=group)
 
 y$offset <- t(t(log(normMat)) + o)
@@ -22,7 +22,8 @@ y$offset <- t(t(log(normMat)) + o)
 y is ready for estimate dispersion functions in edgeR
 
 **note: group value identifies the group memberhip of each sample and should be manually created. group is in y$samples$group.**
-**note: the offsets is prioritized over the normalization factors/library sizes when it is available; the offsets will be used and the normalization factors/library sizes will be ignored in most edgeR functions
+
+**note: the offsets is prioritized over the normalization factors/library sizes when it is available; the offsets will be used and the normalization factors/library sizes will be ignored in most edgeR functions**
 
 ### 2. Filtering
 
@@ -37,7 +38,7 @@ rm(keep)
 y$samples$lib.size <- colSums(y$counts)
 ```
 
-### 3. Normalization
+### 3. Normalization (not necessary)
 ```R
 # normalize for RNA composition
 # the original library size * the scaling factor = effective library size
