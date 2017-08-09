@@ -23,16 +23,14 @@ tx.hs <- tx.hs[,c("tx_id", "gene_id")]
 
 # extract genes annotations
 gene.hs <- genes(ensdb.hs, return.type = 'DataFrame')
-gene.hs <- gene.hs[,c('gene_id', 'symbol')]
+gene.hs <- gene.hs[,c('gene_id', 'symbol', 'entrezid', 'gene_biotype')]
 
 # merge tx and gene annotations by gene_id
 tx2gene.hs <- merge(tx.hs, gene.hs, by = 'gene_id')
-
-# only keep tx ID, gene ID
-tx2gene <- tx2gene.hs[, 2:3]  # tx ID, then gene ID
+tx2gene.hs <- tx2gene.hs[,c('tx_id', 'gene_id', 'symbol', 'entrezid', 'gene_biotype')]
 
 # clean mem
-rm(tx.hs, gene.hs, tx2gene.hs)
+rm(tx.hs, gene.hs, tx2gene.hs, ensdb.hs)
 ```
 
 ### :exclamation: 3. debug: solve the problem of ENST + version bumber, remove version number
@@ -94,7 +92,7 @@ names(file) <- row.names(sampleTable)
 ```
 generate raw counts with:
 ```R
-txi.kallisto.tsv <- tximport(file, type = "kallisto", tx2gene = tx2gene)
+txi.kallisto.tsv <- tximport(file, type = "kallisto", tx2gene = tx2gene.hs)
 head(txi.kallisto.tsv$counts)
 ```
 generate length-independent scaled counts with:
