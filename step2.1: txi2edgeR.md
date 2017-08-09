@@ -11,11 +11,16 @@ library(edgeR)
 cts <- txi.kallisto.tsv$counts
 normMat <- txi.kallisto.tsv$length
 normMat <- normMat/exp(rowMeans(log(normMat)))
-# normalize for gene length and seq depth
+
+# normalize for 1. gene length, 2. seq depth and 3. effective library size
+# this offset can replace all edgeR internal normalization
 o <- log(calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
 
 group <- c(sampleTable$condition)
-y <- DGEList(counts=cts,group=group)
+
+cts$symbol <- row.names(cts)
+y <- DGEList(counts=cts[,1:12], group=group, genes = cts$symbol)
+cts <- cts[,1:12]
 
 y$offset <- t(t(log(normMat)) + o)
 ```
@@ -30,7 +35,6 @@ y is ready for estimate dispersion functions in edgeR
 low expressed genes are filtered out prior to further analysis:
 ```R
 keep <- rowSums(cpm(y)>1) >= 3
-keep
 y <- y[keep, , keep.lib.sizes=FALSE]
 rm(keep)
 
