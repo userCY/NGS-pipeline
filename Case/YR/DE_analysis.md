@@ -110,3 +110,50 @@ rm(raw_tpm)
 ### 4. generating DGEList object for EdgeR
 
 ```R
+library(edgeR)
+
+# generate count matrix with gene annotation
+cts.input <- txi.kallisto.tsv$counts[,1:21]
+cts.input <- merge(cts.input, tx2gene.mm, by.x = 0, by.y = 'gene_id', all.x = TRUE, all.y = FALSE)
+row.names(cts.input) <- cts.input[,1]
+colnames(cts.input)
+gene_anno.input <- cts.input[,c(1,24,25,26)]
+colnames(gene_anno.input)[1] <- 'gene_id'
+cts.input <- cts.input[,2:22]
+colnames(cts.input) <- c('GMP-1', 'LSK-1', 'MEP-1', 'CMP-1', 'GMP-2', 'LSK-2', 'MEP-2', 'CMP-2', 'LT-HSC-1', 'PROG-1',
+                         'LIN-1','LT-HSC-2', 'PROG-2', 'LIN-2', 'LT-HSC-3', 'PROG-3', 'LIN-3', 'GMP-3', 'LSK-3', 'MEP-3',
+                         'CMP-3')
+
+# normalize for gene length, seq depth, and RNA compensation
+normMat <- txi.kallisto.tsv$length[,1:21]
+normMat <- normMat/exp(rowMeans(log(normMat)))
+o <- log(calcNormFactors(cts.input/normMat)) + log(colSums(cts.input/normMat))
+
+# biological gropu info
+group.input <- c(as.character(sampleTable$condition[1:21]))
+
+# create DGEList object
+y.input <- DGEList(counts=cts.input,group=group.input, genes=gene_anno.input)
+
+# feed calculated offset
+y.input$offset <- t(t(log(normMat)) + o)
+
+# filter out low-expressing genes (according to biological replicates)
+# counts per million reads > 1 in more than 3 samples
+keep <- rowSums(cpm(y.input)>1) > 3
+y.input <- y.input[keep, , keep.lib.sizes=FALSE]
+normMat <- normMat[keep,]
+rm(keep)
+
+# recompute the offsets (optional):
+o1 <- log(calcNormFactors(y.input$counts/normMat)) + log(colSums(y.input$counts/normMat))
+y.input$offset <- t(t(log(normMat)) + o1)
+
+#y.input.cpm <- cpm(y.input, normalized.lib.sizes = T)
+#y.input.rpkm <- rpkm(y.input, normalized.lib.sizes = T, gene.length = y.input$genes)
+#write.csv(y.input.rpkm, 'input_rpkm.csv')
+
+# plot PCA
+plotMDS(y.input)
+```
+
