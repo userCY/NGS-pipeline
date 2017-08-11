@@ -49,3 +49,47 @@ rm(tx.mm, gene.mm, tx2gene.mm, ensdb.mm)
 d <- duplicated(tx2gene.mm$gene_id)
 tx2gene.mm <- tx2gene.mm[!d,]
 ```
+### 3. extracting raw counts
+
+```python
+raw_count <- txi.kallisto.tsv$counts
+raw_count <- merge(raw_count, tx2gene.mm, by.x = 0, by.y = 'gene_id')
+rn <- c(' ',' ',' ',' ','GMP-1', 'LSK-1', 'MEP-1', 'CMP-1', 'GMP-2', 'LSK-2', 'MEP-2', 'CMP-2', 'LT-HSC-1', 'PROG-1',
+        'LIN-1','LT-HSC-2', 'PROG-2', 'LIN-2', 'LT-HSC-3', 'PROG-3', 'LIN-3', 'GMP-3', 'LSK-3', 'MEP-3',
+        'CMP-3')
+
+raw_count.input <- cbind(raw_count[,1], raw_count[,45:47],raw_count[2:22])
+raw_count.input <- rbind(rn, raw_count.input)
+raw_count.input[,5:25] <- raw_count.input[,5:25][,c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
+colnames(raw_count.input)[5:25] <- colnames(raw_count.input)[5:25][c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
+colnames(raw_count.input)[1] <- 'gene_id'
+write.csv(raw_count.input, 'raw_count_input.csv')
+rm(raw_count.input)
+
+raw_count.input.clean <- cbind(raw_count[,1], raw_count[,45:47],raw_count[2:22])
+raw_count.input.clean[,5:25] <- raw_count.input.clean[,5:25][,c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
+colnames(raw_count.input.clean)[5:25] <- colnames(raw_count.input.clean)[5:25][c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
+raw_count.input.clean <- raw_count.input.clean[rowSums(raw_count.input.clean[5:25])>0,]
+write.csv(raw_count.input.clean, 'raw_count_input_clean.csv')
+rm(raw_count.input.clean)
+
+
+raw_count.ip <- cbind(raw_count[,1], raw_count[,45:47],raw_count[23:43])
+raw_count.ip <- rbind(rn, raw_count.ip)
+raw_count.ip[,5:25] <- raw_count.ip[,5:25][,c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
+colnames(raw_count.ip)[5:25] <- colnames(raw_count.ip)[5:25][c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
+colnames(raw_count.ip)[1] <- 'gene_id'
+write.csv(raw_count.ip, 'raw_count_ip.csv')
+rm(raw_count.ip)
+
+raw_count.ip.clean <- cbind(raw_count[,1], raw_count[,45:47],raw_count[23:43])
+raw_count.ip.clean[,5:25] <- raw_count.ip.clean[,5:25][,c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
+colnames(raw_count.ip.clean)[5:25] <- colnames(raw_count.ip.clean)[5:25][c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
+raw_count.ip.clean <- raw_count.ip.clean[rowSums(raw_count.ip.clean[5:25])>0,]
+write.csv(raw_count.ip.clean, 'raw_count_ip_clean.csv')
+rm(raw_count.ip.clean)
+rm(raw_count)
+
+raw_tpm <- txi.kallisto.tsv$abundance
+rm(raw_tpm)
+```
