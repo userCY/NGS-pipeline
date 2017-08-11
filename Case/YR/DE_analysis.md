@@ -20,14 +20,13 @@ EnsDb gene features:
 listTables(edb)
 
 listColumns(edb, "gene")
+```
 $gene
-
 [1] "gene_id"          "gene_name"        "entrezid"        
 [4] "gene_biotype"     "gene_seq_start"   "gene_seq_end"    
 [7] "seq_name"         "seq_strand"       "seq_coord_system"
 [10] "symbol"
-
-
+```
 
 ```R
 library(EnsDb.Mmusculus.v79)
