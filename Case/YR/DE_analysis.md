@@ -51,7 +51,7 @@ tx2gene.mm <- tx2gene.mm[!d,]
 ```
 ### 3. extracting raw counts
 
-```python
+```R
 raw_count <- txi.kallisto.tsv$counts
 raw_count <- merge(raw_count, tx2gene.mm, by.x = 0, by.y = 'gene_id')
 rn <- c(' ',' ',' ',' ','GMP-1', 'LSK-1', 'MEP-1', 'CMP-1', 'GMP-2', 'LSK-2', 'MEP-2', 'CMP-2', 'LT-HSC-1', 'PROG-1',
