@@ -109,6 +109,8 @@ rm(raw_tpm)
 
 ### 4. generating DGEList object for EdgeR
 
+##### 4.1 input data
+
 ```R
 library(edgeR)
 
@@ -155,5 +157,192 @@ y.input$offset <- t(t(log(normMat)) + o1)
 
 # plot PCA
 plotMDS(y.input)
+
+# plot color PCA
+library(RColorBrewer)
+colors <- brewer.pal(7, "Set2")
+# no normalization
+plotRLE(y.input$counts, outline=FALSE, ylim=c(-4, 4), col=colors[x])
+plotPCA(y.input$counts, col=colors[x], cex=1.2)
+# after normalization
+plotRLE(y.input$counts/y.input$offset, outline=FALSE, ylim=c(-4, 4), col=colors[x])
+plotPCA(y.input$counts/y.input$offset, col=colors[x], cex=1.2)
 ```
 
+##### 4.2 ip data
+
+```R
+cts.ip <- txi.kallisto.tsv$counts[,22:42]
+cts.ip <- merge(cts.ip, tx2gene.mm, by.x = 0, by.y = 'gene_id', all.x = TRUE, all.y = FALSE)
+row.names(cts.ip) <- cts.ip[,1]
+colnames(cts.ip)
+gene_anno.ip <- cts.ip[,c(1,24,25,26)]
+colnames(gene_anno.ip)[1] <- 'gene_id'
+cts.ip <- cts.ip[,2:22]
+colnames(cts.ip) <- c('GMP-1', 'LSK-1', 'MEP-1', 'CMP-1', 'GMP-2', 'LSK-2', 'MEP-2', 'CMP-2', 'LT-HSC-1', 'PROG-1',
+                         'LIN-1','LT-HSC-2', 'PROG-2', 'LIN-2', 'LT-HSC-3', 'PROG-3', 'LIN-3', 'GMP-3', 'LSK-3', 'MEP-3',
+                         'CMP-3')
+
+normMat <- txi.kallisto.tsv$length[,22:42]
+normMat <- normMat/exp(rowMeans(log(normMat)))
+o <- log(calcNormFactors(cts.ip/normMat)) + log(colSums(cts.ip/normMat))
+
+group.ip <- c(as.character(sampleTable$condition[22:42]))
+
+y.ip <- DGEList(counts=cts.ip,group=group.ip, genes=gene_anno.ip)
+
+y.ip$offset <- t(t(log(normMat)) + o)
+
+keep <- rowSums(cpm(y.ip)>1) > 3
+y.ip <- y.ip[keep, , keep.lib.sizes=FALSE]
+normMat <- normMat[keep,]
+rm(keep)
+# it is recommended to recompute the library sizes:
+o1 <- log(calcNormFactors(y.ip$counts/normMat)) + log(colSums(y.ip$counts/normMat))
+y.ip$offset <- t(t(log(normMat)) + o1)
+
+#y.ip.cpm <- cpm(y.ip, normalized.lib.sizes = T)
+#y.ip.rpkm <- rpkm(y.ip, normalized.lib.sizes = T, gene.length = y.ip$genes)
+#write.csv(y.ip.rpkm, 'ip_rpkm.csv')
+
+plotMDS(y.ip)
+
+
+```
+
+### 5. DE analysis
+
+##### 5.1 input data
+
+```R
+
+# create design matrix
+design.input <- model.matrix(~0+group.input)
+
+# estimate dispersion
+y.input <- estimateDisp(y.input, design.input)
+y.input$common.dispersion
+# coefficient of variation of biological variation (BCV) is calculated with:
+sqrt(y.input$common.disp)
+# The dispersion estimates can be viewed in a BCV plot
+plotBCV(y.input)
+
+# fit with glm model
+fit.input <- glmFit(y.input, design.input)
+
+# conduct 
+
+# conduct one-way ANOVA-like test:
+lrt.input <- glmLRT(fit.input, coef = c(2:6))
+topTags(lrt)
+
+# Note that glmLRT has conducted a test for the last coefficient in the linear model:
+colnames(design.input)
+
+plotMD(lrt.input)
+abline(h=c(-1, 1), col="blue")
+
+logcpm.input <- cpm(y.input, prior.count=2, log=TRUE)
+
+# generate heatmap
+colors <- colorRampPalette(c('blue','light blue','white', 'pink',"red"))(100)
+annotation_col = data.frame(CellType = c("LT-HSC","LT-HSC",'CMP','CMP','MEP','MEP','MEP',
+                                         'prog','prog', "lin+","lin+","lin+"))
+rownames(annotation_col) = c(colnames(logmat))
+
+
+pheatmap(logcpm.input,
+         color = colors,
+         scale = 'row',
+         gaps_col = c(3,6,9,12,15,18),
+         #annotation_col = annotation_col,
+         cutree_cols = 7,
+         labels_row = '',
+         cluster_cols = T,
+         cluster_rows = T)
+```
+
+##### 5.2 ip data
+
+```R
+cts.ip <- txi.kallisto.tsv$counts[,22:42]
+cts.ip <- merge(cts.ip, tx2gene.mm, by.x = 0, by.y = 'gene_id', all.x = TRUE, all.y = FALSE)
+row.names(cts.ip) <- cts.ip[,1]
+colnames(cts.ip)
+gene_anno.ip <- cts.ip[,c(1,24,25,26)]
+colnames(gene_anno.ip)[1] <- 'gene_id'
+cts.ip <- cts.ip[,2:22]
+colnames(cts.ip) <- c('GMP-1', 'LSK-1', 'MEP-1', 'CMP-1', 'GMP-2', 'LSK-2', 'MEP-2', 'CMP-2', 'LT-HSC-1', 'PROG-1',
+                         'LIN-1','LT-HSC-2', 'PROG-2', 'LIN-2', 'LT-HSC-3', 'PROG-3', 'LIN-3', 'GMP-3', 'LSK-3', 'MEP-3',
+                         'CMP-3')
+
+normMat <- txi.kallisto.tsv$length[,22:42]
+normMat <- normMat/exp(rowMeans(log(normMat)))
+o <- log(calcNormFactors(cts.ip/normMat)) + log(colSums(cts.ip/normMat))
+
+group.ip <- c(as.character(sampleTable$condition[22:42]))
+
+y.ip <- DGEList(counts=cts.ip,group=group.ip, genes=gene_anno.ip)
+
+y.ip$offset <- t(t(log(normMat)) + o)
+
+keep <- rowSums(cpm(y.ip)>1) > 3
+y.ip <- y.ip[keep, , keep.lib.sizes=FALSE]
+normMat <- normMat[keep,]
+rm(keep)
+# it is recommended to recompute the library sizes:
+o1 <- log(calcNormFactors(y.ip$counts/normMat)) + log(colSums(y.ip$counts/normMat))
+y.ip$offset <- t(t(log(normMat)) + o1)
+
+#y.ip.cpm <- cpm(y.ip, normalized.lib.sizes = T)
+#y.ip.rpkm <- rpkm(y.ip, normalized.lib.sizes = T, gene.length = y.ip$genes)
+#write.csv(y.ip.rpkm, 'ip_rpkm.csv')
+
+plotMDS(y.ip)
+
+# create design matrix
+design.ip <- model.matrix(~0+group.ip)
+
+# estimate dispersion
+y.ip <- estimateDisp(y.ip, design.ip)
+y.ip$common.dispersion
+# coefficient of variation of biological variation (BCV) is calculated with:
+sqrt(y.ip$common.disp)
+# The dispersion estimates can be viewed in a BCV plot
+plotBCV(y.ip)
+
+# fit with glm model
+fit.ip <- glmFit(y.ip, design.ip)
+
+# conduct 
+
+# conduct one-way ANOVA-like test:
+lrt.ip <- glmLRT(fit.ip, coef = c(2:6))
+topTags(lrt)
+
+# Note that glmLRT has conducted a test for the last coefficient in the linear model:
+colnames(design.ip)
+
+plotMD(lrt.ip)
+abline(h=c(-1, 1), col="blue")
+
+logcpm.ip <- cpm(y.ip, prior.count=2, log=TRUE)
+
+# generate heatmap
+colors <- colorRampPalette(c('blue','light blue','white', 'pink',"red"))(100)
+annotation_col = data.frame(CellType = c("LT-HSC","LT-HSC",'CMP','CMP','MEP','MEP','MEP',
+                                         'prog','prog', "lin+","lin+","lin+"))
+#rownames(annotation_col) = c(colnames(logmat))
+
+
+pheatmap(logcpm.ip,
+         color = colors,
+         scale = 'row',
+         gaps_col = c(3,6,9,12,15,18),
+         #annotation_col = annotation_col,
+         cutree_cols = 7,
+         labels_row = '',
+         cluster_cols = T,
+         cluster_rows = T)
+
+```
