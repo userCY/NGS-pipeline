@@ -12,7 +12,7 @@ head(txi.kallisto.tsv$counts)
 ```
 ### 2. gene annotation
 
-using EnsDb.Mmusculus.v79 data base and ensembldb package to annotate our genes
+using EnsDb.Mmusculus.v79 database and ensembldb package to annotate our genes
 package manual: https://bioconductor.org/packages/release/bioc/vignettes/ensembldb/inst/doc/ensembldb.html
 
 EnsDb gene features:
@@ -51,6 +51,17 @@ tx2gene.mm <- tx2gene.mm[!d,]
 ```
 ### 3. extracting raw counts
 
+raw\_count: raw read counts at gene level
+
+0 filtered count: filter out 0 expressing genes across all samples
+
+annotations: 
+- ensembl gene id
+- gene symbol
+- Entrez gene id
+- gene biological type
+
+##### 3.1 input data
 ```R
 raw_count <- txi.kallisto.tsv$counts
 raw_count <- merge(raw_count, tx2gene.mm, by.x = 0, by.y = 'gene_id')
@@ -72,8 +83,10 @@ colnames(raw_count.input.clean)[5:25] <- colnames(raw_count.input.clean)[5:25][c
 raw_count.input.clean <- raw_count.input.clean[rowSums(raw_count.input.clean[5:25])>0,]
 write.csv(raw_count.input.clean, 'raw_count_input_clean.csv')
 rm(raw_count.input.clean)
+```
+##### 3.2 ip data
 
-
+```R
 raw_count.ip <- cbind(raw_count[,1], raw_count[,45:47],raw_count[23:43])
 raw_count.ip <- rbind(rn, raw_count.ip)
 raw_count.ip[,5:25] <- raw_count.ip[,5:25][,c(9,12,15,2,6,19,10,13,16,4,8,21,1,5,18,3,7,20,11,14,17)]
@@ -93,3 +106,7 @@ rm(raw_count)
 raw_tpm <- txi.kallisto.tsv$abundance
 rm(raw_tpm)
 ```
+
+### 4. generating DGEList object for EdgeR
+
+```R
