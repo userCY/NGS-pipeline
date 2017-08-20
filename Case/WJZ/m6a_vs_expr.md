@@ -91,23 +91,25 @@ met.p.cut <- 0.05
 logFC.me.cut <- 1.5
 #logFC.cut
 logFC.ge.cut <- 1.5
+# add names
 names <- FALSE
 names.fill = TRUE
-circle = TRUE
+# no circle
+circle = FALSE
 filename <- "starburst.png"
 return.plot <- FALSE
 ylab <- expression(atop("Gene Expression",
                        paste(Log[10],
                              " (FDR corrected P values)")))
-xlab = expression(atop("DNA Methylation",
+xlab = expression(atop("mRNA adenine N6-methylation level",
                        paste(Log[10],
                              " (FDR corrected P values)")))
 height<-10
 width<-15
 dpi<-300
 
-title <- "Starburst Plot"
-legend <- "RNA Methylation/Expression Relation"
+title <- "ALKBH5 knockdown vs control Starburst Plot"
+legend <- "m6a level/Expression Relation"
 
 label <- c("Not Significant",
           "Up regulated & Hypo methylated",
@@ -130,6 +132,7 @@ names(names.color) <- label
 #---------------------------------------------
 
 volcano <- merge(met, exp, by = 'gene_id')
+volcano <- volcano[!duplicated(volcano$symbol),]
 #volcano$ID <- paste(volcano$Gene_symbol,
 #                    volcano$probeID, sep = ".")
 
@@ -216,14 +219,14 @@ volcano$shape <- "1"
 volcano$threshold.starburst <- "1"
 volcano$threshold.size <- "1"
 
-state <- c("Up regulated & Hypo methylated",
-           "Down regulated & Hypo methylated",
+state <- c("Hypo methylated & Up regulated",
+           "Hypo methylated & Down regulated",
            "hypo methylated",
            "hyper methylated",
            "Up regulated",
            "Down regulated",
-           "Up regulated & Hyper methylated",
-           "Down regulated & Hyper methylated")
+           "Hyper methylated & Up regulated",
+           "Hyper methylated & Down regulated")
 
 s <- list(a, b, c, d, e, f, g, h)
 for (i in seq_along(s)) {
@@ -270,16 +273,16 @@ if(!is.null(significant) & circle){
 }
 
 
-
+library(ggrepel)
 if(names == TRUE & !is.null(significant)){
   message("Adding names to genes")
   if(names.fill){
     p <- p + geom_label_repel(
       data = significant,
       aes(x = significant$meFDR2, y =  significant$geFDR2,
-          label = significant$symbol.x, fill = as.factor(significant$starburst.status)),
+          label = significant$symbol, fill = as.factor(significant$starburst.status)),
       size = 4, show.legend = FALSE,
-      fontface = 'bold', color = 'white',
+      fontface = 'bold', color = 'black',
       box.padding = unit(0.35, "lines"),
       point.padding = unit(0.3, "lines")
     ) + scale_fill_manual(values=names.color)
@@ -287,7 +290,7 @@ if(names == TRUE & !is.null(significant)){
     p <- p + geom_text_repel(
       data = significant,
       aes(x = significant$meFDR2, y =  significant$geFDR2,
-          label = significant$symbol.x, fill = significant$starburst.status),
+          label = significant$symbol, fill = significant$starburst.status),
       size = 4, show.legend = FALSE,
       fontface = 'bold', color = 'black',
       point.padding = unit(0.3, "lines"),
@@ -353,6 +356,4 @@ if (logFC.ge.cut != 0){
 if(return.plot) {
   return(list(plot=p,starburst=volcano))
 }
-
-return(volcano)
 ```
