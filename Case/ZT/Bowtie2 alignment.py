@@ -1,4 +1,4 @@
-```python
+
 import os 
 import re
 import fnmatch
@@ -21,4 +21,3 @@ for i in range(n):
 	bowtie2_cmd = 'bowtie2 ' + '-p 20 -x ' + bowtie2_idx + ' -1 ' + forward[i] + ' -2 ' + reverse[i] + ' -S ./' + output_dir_base + '/' + outfile + '.sam' + ' 2>' + './' + output_dir_base + '/' + outfile + 'align.log'
 	os.system(bowtie2_cmd)
   
-  ```
