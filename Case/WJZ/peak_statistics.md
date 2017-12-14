@@ -311,3 +311,44 @@ write.csv(met, 'm6a_compare_all.csv')
 # clean mem
 rm(gene.hs, ensdb.hs)
 ```
+5 m6A peaks scatter plot
+=======
+```R
+ctrl_1 <- file.path('D:','RWD','WJZ','m6a-seq','RMT_peaks','IP_ctrl_1', 'con_peak.xls')
+ctrl_2 <- file.path('D:','RWD','WJZ','exomePeak','RMT_ctrl_kd_Result','IP_ctrl_2','con_peak.bed')
+ctrl_3 <- file.path('D:','RWD','WJZ','exomePeak','RMT_ctrl_kd_Result','IP_ctrl_3','con_peak.bed')
+
+kd_1 <- file.path('D:','RWD','WJZ','exomePeak','RMT_ctrl_kd_Result','IP_KD_1','con_peak.xls')
+kd_2 <- file.path('D:','RWD','WJZ','m6a-seq','RMT_peaks','IP_KD_2','con_peak.xls')
+kd_3 <- file.path('D:','RWD','WJZ','exomePeak','RMT_ctrl_kd_Result','IP_KD_3','con_peak.xls')
+
+res_1 <- file.path('D:','RWD','WJZ','exomePeak','RMT_rescue_Result','res_rep_1','con_peak.bed')
+res_2 <- file.path('D:','RWD','WJZ','exomePeak','RMT_rescue_Result','res_rep_2','con_peak.bed')
+res_3 <- file.path('D:','RWD','WJZ','exomePeak','RMT_rescue_Result','res_rep_3','con_peak.bed')
+
+ctrl_1 <- read.table(ctrl_1, sep = '\t', header = T, stringsAsFactors = F)
+kd_2 <- read.table(kd_2, sep = '\t', header = T, stringsAsFactors = F)
+
+compare <- merge(ctrl_1, kd_2, by = 'name')
+d <- duplicated(compare$name)
+compare <- compare[!d,]
+compare <- compare[10^compare$lg.fdr.x<0.05&10^compare$lg.fdr.y<0.05,]
+
+library(ggplot2)
+compare$status <- 'non-sig'
+compare$status[compare$fold_enrchment.y/compare$fold_enrchment.x > 2^1.5] <- 'up'
+compare$status[compare$fold_enrchment.y/compare$fold_enrchment.x < 1/(2^1.5)] <- 'down'
+table(compare$status)
+
+# http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
+palette <- c("forestgreen", "grey", "firebrick1")
+p <- ggplot(compare, aes(log(fold_enrchment.x),log(fold_enrchment.y), colour = factor(status))) + geom_point() + scale_colour_manual(values=palette)
+p <- p + geom_abline(intercept = c(log(1/(2^0.5)), log(2^0.5)), slope = 1, linetype="dashed", size = 1)
+p <- p + geom_abline(slope = 1, color = 'blue', size = 1)
+p +   theme_bw() +
+  theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) 
+```
