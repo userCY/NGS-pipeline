@@ -1,5 +1,4 @@
-1. A5 knockdown vs control
---------------------
+## 1. A5 knockdown vs control
 
 ```R
 library("exomePeak")
@@ -40,8 +39,8 @@ rmt <- RMT(IP_BAM = c(ip1,ip2,ip3,ip7,ip8,ip9),
 			EXOME_OUTPUT_DIR = file.path('','home','ycli','data1','WJZ','exome_out')
 			)
 ```
-2. A5 overexpression vs control
-----------
+## 2. A5 overexpression vs control
+
 ```R
 library("exomePeak")
 
