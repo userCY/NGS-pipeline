@@ -1,3 +1,5 @@
+Plot mRNA m6a level against gene expression level
+
 1 read in kallisto file
 ==================
 
