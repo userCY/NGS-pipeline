@@ -5,6 +5,7 @@ m6A peak statistics
 2. calculating number of peaks per transcript
 3. calculating how many m6A sites were rescued
 4. compare m6A sites between samples
+5. peak scatter plot (mimicing Nature Letters m6A modulates haematopoietic stem and progenitor cell specification)
 
 1 peak venn diagram
 =====
