@@ -41,7 +41,7 @@ rmt <- RMT(IP_BAM = c(ip1,ip2,ip3,ip7,ip8,ip9),
 			)
 ```
 2. A5 overexpression vs control
-==========
+----------
 ```R
 library("exomePeak")
 
