@@ -4,6 +4,7 @@ XXQ - CRISPR screening
 #### metadata
 ```python
 library: Human_GeCKOv2_Library_A
+control: median
 
 ```
 
