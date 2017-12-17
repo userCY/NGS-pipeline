@@ -13,13 +13,45 @@ NHEJ_2 <- gene_summary_2[abs(gene_summary_2$NHEJ.beta)>0.3,1:8]
 NHEJ_3 <- gene_summary_3[abs(gene_summary_3$NHEJ.beta)>0.3,1:8]
 
 # calculate overlap across samples
-overlap_12 <- merge(NHEJ_1, NHEJ_2, by = 'Gene')
-overlap_23 <- merge(NHEJ_2, NHEJ_3, by = 'Gene')
-overlap_13 <- merge(NHEJ_1, NHEJ_3, by = 'Gene')
+NHEJ_12 <- merge(NHEJ_1, NHEJ_2, by = 'Gene')
+NHEJ_23 <- merge(NHEJ_2, NHEJ_3, by = 'Gene')
+NHEJ_13 <- merge(NHEJ_1, NHEJ_3, by = 'Gene')
 
 gene_summary_NHEJ <- merge(NHEJ_1, NHEJ_2, by = 'Gene')
 gene_summary_NHEJ <- merge(gene_summary_NHEJ, NHEJ_3, by = 'Gene')
 
 # write out merged results
-write.csv(gene_summary_NHEJ,'gene_summary_NHEJ.csv')
+write.csv(NHEJ_1,'NHEJ_1.CSV')
+write.csv(NHEJ_2,'NHEJ_2.CSV')
+write.csv(NHEJ_3,'NHEJ_3.CSV')
+write.csv(NHEJ_12,'NHEJ_12.CSV')
+write.csv(NHEJ_13,'NHEJ_13.CSV')
+write.csv(NHEJ_23,'NHEJ_23.CSV')
+write.csv(gene_summary_NHEJ,'gene_summary_NHEJ.CSV')
+#VennDiagram
+library(grid)
+library(VennDiagram)
+draw.triple.venn(area1 = 4988,area2 = 6498,area3 = 3293,n12 = 1749,n13 = 955,n23 = 1055,n123 = 387,category = c('XXQ1','XXQ2','XXQ3') reverse = T,lty = "blank",lwd=c(2,3,1),fill = c("skyblue", "pink1", "mediumorchid"),overrideTriple = 1,euler.d = T,scaled = TRUE, print.mode = c('raw','percent'))
+#HR beta scores >0.3 or<-o.3
+HR_1 <- gene_summary_1[abs(gene_summary_1$HR.beta)>0.3, c(1,2,9,10,11,12,13,14)]
+HR_2 <- gene_summary_2[abs(gene_summary_2$HR.beta)>0.3, c(1,2,9,10,11,12,13,14)]
+HR_3 <- gene_summary_3[abs(gene_summary_3$HR.beta)>0.3, c(1,2,9,10,11,12,13,14)]
+#merge
+HR_12 <- merge(HR_1,HR_2,by='Gene')
+HR_13 <- merge(HR_1,HR_3,by='Gene')
+HR_23 <- merge(HR_2,HR_3,by='Gene')
+HR_123 <- merge(HR_12,HR_3,by='Gene')
+#write
+write.csv(HR_1,'HR_1.CSV')
+write.csv(HR_2,'HR_2.CSV')
+write.csv(HR_3,'HR_3.CSV')
+write.csv(HR_12,'HR_12.CSV')
+write.csv(HR_13,'HR_13.CSV')
+write.csv(HR_23,'HR_23.CSV')
+write.csv(HR_123,'HR_123.CSV')
+#vennDiagram
+library(grid)
+library(VennDiagram)
+draw.triple.venn(area1 = 5621,area2 = 5713,area3 = 4563,n12 = 1814,n13 = 1461,n23 = 1467,n123 = 570,category = c('XXQ1','XXQ2','XXQ3'),reverse = T,lty = "blank",lwd=c(2,3,1), fill = c("skyblue", "pink1", "mediumorchid"),overrideTriple = 1,euler.d = T,scaled = TRUE, print.mode = c('raw','percent'))                 
+
 ```
